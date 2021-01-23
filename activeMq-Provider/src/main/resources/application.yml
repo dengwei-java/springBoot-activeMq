@@ -1,0 +1,27 @@
+
+server:
+  port: 8081
+  servlet:
+    context-path: '/'
+
+# activemq 配置
+spring:
+  activemq:
+  # 中间件服务地址
+    broker-url: tcp://localhost:61616
+    user: admin
+    password: admin
+    # 信任所有的包
+    packages:
+      trust-all: true
+    #true 表示使用内置的MQ，false则连接服务器
+    in-memory: false
+    pool:
+      #true表示使用连接池；false时，每发送一条数据创建一个连接
+      enabled: true
+      #连接池最大连接数
+      max-connections: 10
+      #空闲的连接过期时间，默认为30秒
+      idle-timeout: 30S
+  application:
+    name: ActiveMQ-Provider
