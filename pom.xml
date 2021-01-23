@@ -27,11 +27,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-activemq</artifactId>
         </dependency>
-        <!--activemq消息队列连接池-->
+        <!--activemq消息队列连接池,使用springboot2.0+及以下版本时候，maven配置依赖是：-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.activemq</groupId>-->
+            <!--<artifactId>activemq-pool</artifactId>-->
+        <!--</dependency>-->
+        <!--activemq消息队列连接池, 使用springboot2.1+时候，maven配置依赖是：-->
         <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-pool</artifactId>
-            <version>5.15.0</version>
+            <groupId>org.messaginghub</groupId>
+            <artifactId>pooled-jms</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
