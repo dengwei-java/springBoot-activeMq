@@ -12,7 +12,7 @@ import org.springframework.jms.annotation.EnableJms;
  * @Version 1.0
  */
 @SpringBootApplication
-@EnableJms // //启动消息队列
+@EnableJms // 启用消息队列
 public class CustomerMainStater {
     public static void main(String[] args) {
         SpringApplication.run(CustomerMainStater.class, args);

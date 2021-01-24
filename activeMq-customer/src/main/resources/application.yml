@@ -6,6 +6,9 @@ server:
 
 # activemq 配置
 spring:
+#  jms:
+  #如果是点对点（queue），那么此处默认应该是false，如果发布订阅，那么一定设置为true，这种方式配置只能满足一种，如果要满足两种参考config下的配置
+#    pub-sub-domain: false
   activemq:
   # 中间件服务地址
     broker-url: tcp://localhost:61616
