@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * @Author dw
  * @ClassName CustomerService
- * @Description 消费者接受队列中的消息
+ * @Description 消费者接受队列中的消息以 点对点 和 Topic为例
  * @Date 2021/1/23 23:23
  * @Version 1.0
  */
@@ -22,9 +22,9 @@ public class CustomerService {
      * @param message
      * @return
      */
-    @JmsListener(destination = "MyActiveMQQueue", containerFactory = "jmsListenerContainerQueue")
+//    @JmsListener(destination = "MyActiveMQQueue", containerFactory = "jmsListenerContainerQueue")
     // SendTo 会将此方法返回的数据, 写入到 OutQueue 中去.实现双向绑定，在消费者接收到信息后给生产者返回一个内容，告诉生产者已经接收到消息
-    @SendTo("outQueue")
+//    @SendTo("outQueue")
     public String handleQueueMessage(String message) {
         System.out.println("方法一成功接受message" + message);
         return "方法一成功接受message" + message;
@@ -36,9 +36,9 @@ public class CustomerService {
      * @param message
      * @return
      */
-    @JmsListener(destination = "MyActiveMQQueue", containerFactory = "jmsListenerContainerQueue")
+//    @JmsListener(destination = "MyActiveMQQueue", containerFactory = "jmsListenerContainerQueue")
     // SendTo 会将此方法返回的数据, 写入到 OutQueue 中去.实现双向绑定，在消费者接收到信息后给生产者返回一个内容，告诉生产者已经接收到消息
-    @SendTo("outQueue")
+//    @SendTo("outQueue")
     public String handleQueueMessage2(String message) {
         System.out.println("方法2成功接受message==" + message);
         return "方法2成功接受message==" + message;

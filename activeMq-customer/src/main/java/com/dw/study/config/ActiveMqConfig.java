@@ -1,6 +1,7 @@
 package com.dw.study.config;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.RedeliveryPolicy;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,8 @@ import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerContainerFactory;
 
 import javax.jms.Queue;
+
+import static org.apache.activemq.ActiveMQSession.INDIVIDUAL_ACKNOWLEDGE;
 
 /**
  * @Author dw
@@ -43,7 +46,10 @@ public class ActiveMqConfig {
     }
 
 
-
+    /**
+     * ActiveMQ 连接工厂用于创建和中间件的连接
+     * @return
+     */
     @Bean
     public ActiveMQConnectionFactory connectionFactory() {
         return new ActiveMQConnectionFactory(brokerUrl);
@@ -59,6 +65,18 @@ public class ActiveMqConfig {
     @Bean
     public JmsListenerContainerFactory<?> jmsListenerContainerQueue(ActiveMQConnectionFactory connectionFactory){
         DefaultJmsListenerContainerFactory bean = new DefaultJmsListenerContainerFactory();
+        // 手动签收
+        bean.setSessionTransacted(false);
+        /**
+         *  设置消息的签收模式AUTO_ACKNOWLEDGE = 1    自动确认
+         *   CLIENT_ACKNOWLEDGE = 2    客户端手动确认
+         * 　DUPS_OK_ACKNOWLEDGE = 3    自动批量确认
+         * 　SESSION_TRANSACTED = 0    事务提交并确认
+         * 　INDIVIDUAL_ACKNOWLEDGE = 4  单条消息确认 activemq 独有       　　　　　　
+         */
+        bean.setSessionAcknowledgeMode(INDIVIDUAL_ACKNOWLEDGE);
+        // 配置消息的重发规则
+        connectionFactory.setRedeliveryPolicy(redeliveryPolicy());
         bean.setConnectionFactory(connectionFactory);
         return bean;
     }
@@ -69,9 +87,33 @@ public class ActiveMqConfig {
         DefaultJmsListenerContainerFactory bean = new DefaultJmsListenerContainerFactory();
         //设置为发布订阅方式, 默认情况下使用的生产消费者方式
         bean.setPubSubDomain(true);
+        // topic持久化
+        bean.setSubscriptionDurable(true);
+        bean.setClientId("defaultTopic");
         bean.setConnectionFactory(connectionFactory);
         return bean;
     }
 
+
+    /**
+     *消息的重发规则配置
+     */
+    @Bean
+    public RedeliveryPolicy redeliveryPolicy() {
+        RedeliveryPolicy  redeliveryPolicy=   new RedeliveryPolicy();
+        // 是否在每次尝试重新发送失败后,增长这个等待时间
+        redeliveryPolicy.setUseExponentialBackOff(true);
+        // 重发次数,默认为6次
+        redeliveryPolicy.setMaximumRedeliveries(5);
+        // 重发时间间隔,默认为1000ms（1秒）
+        redeliveryPolicy.setInitialRedeliveryDelay(1000);
+        // 重发时长递增的时间倍数2
+        redeliveryPolicy.setBackOffMultiplier(2);
+        // 是否避免消息碰撞
+        redeliveryPolicy.setUseCollisionAvoidance(false);
+        // 设置重发最大拖延时间-1表示无延迟限制
+        redeliveryPolicy.setMaximumRedeliveryDelay(-1);
+        return redeliveryPolicy;
+    }
 
 }
