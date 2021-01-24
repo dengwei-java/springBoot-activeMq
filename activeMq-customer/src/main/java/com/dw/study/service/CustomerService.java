@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomerService {
 
+    //############【如下配置了两个点对点消费者测试发现每个点对点消费者只能消费一次，如果多个点对点消费者，那么会平均接受到消息】########################
 
     /**
      * 【点对点消费者】
@@ -25,8 +26,22 @@ public class CustomerService {
     // SendTo 会将此方法返回的数据, 写入到 OutQueue 中去.实现双向绑定，在消费者接收到信息后给生产者返回一个内容，告诉生产者已经接收到消息
     @SendTo("outQueue")
     public String handleQueueMessage(String message) {
-        System.out.println("成功接受message" + message);
-        return "成功接受message" + message;
+        System.out.println("方法一成功接受message" + message);
+        return "方法一成功接受message" + message;
+    }
+
+    /**
+     * 【点对点消费者2】
+     * 使用JmsListener配置消费者监听名为MyActiveMQQueue的队列，其中message是接收到的消息
+     * @param message
+     * @return
+     */
+    @JmsListener(destination = "MyActiveMQQueue", containerFactory = "jmsListenerContainerQueue")
+    // SendTo 会将此方法返回的数据, 写入到 OutQueue 中去.实现双向绑定，在消费者接收到信息后给生产者返回一个内容，告诉生产者已经接收到消息
+    @SendTo("outQueue")
+    public String handleQueueMessage2(String message) {
+        System.out.println("方法2成功接受message==" + message);
+        return "方法2成功接受message==" + message;
     }
 
 
@@ -37,9 +52,8 @@ public class CustomerService {
      * @return
      */
     @JmsListener(destination = "MyActiveMQTopic", containerFactory = "jmsListenerContainerTopic")
-    public String handleTopicMessage(String message) {
-        System.out.println("成功接受message" + message);
-        return "成功接受message" + message;
+    public void handleTopicMessage(String message) {
+        System.out.println("成功接受message==" + message);
     }
 
     /**
@@ -49,9 +63,8 @@ public class CustomerService {
      * @return
      */
     @JmsListener(destination = "MyActiveMQTopic", containerFactory = "jmsListenerContainerTopic")
-    public String handleTopicMessage2(String message) {
-        System.out.println("成功接受message" + message);
-        return "成功接受message" + message;
+    public void handleTopicMessage2(String message) {
+        System.out.println("成功接受message==" + message);
     }
 
 
