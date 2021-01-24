@@ -65,8 +65,8 @@ public class ActiveMqConfig {
     @Bean
     public JmsListenerContainerFactory<?> jmsListenerContainerQueue(ActiveMQConnectionFactory connectionFactory){
         DefaultJmsListenerContainerFactory bean = new DefaultJmsListenerContainerFactory();
-        // 手动签收
-        bean.setSessionTransacted(false);
+        // 使用session事务
+        bean.setSessionTransacted(true);
         /**
          *  设置消息的签收模式AUTO_ACKNOWLEDGE = 1    自动确认
          *   CLIENT_ACKNOWLEDGE = 2    客户端手动确认
